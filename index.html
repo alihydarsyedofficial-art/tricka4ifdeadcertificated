@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRICK A4IF FORENSIC Tool - TRICK A4IF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Dancing+Script:wght@700&family=Roboto:wght@400;700&display=swap');
+
+        :root { --primary: #b03021; --bg-dark: #121212; --accent: #efd585; }
+        body { margin: 0; background: #222; font-family: 'Roboto', sans-serif; color: #fff; }
+
+        /* টুলস প্যানেল */
+        .admin-header { background: var(--bg-dark); padding: 20px; border-bottom: 4px solid var(--primary); text-align: center; }
+        .admin-header h1 { margin: 0; color: var(--accent); font-size: 24px; }
+        .promo { font-size: 14px; color: #888; margin-top: 5px; }
+        .promo b { color: var(--accent); }
+
+        .form-container { max-width: 1300px; margin: 20px auto; padding: 20px; background: #1e1e1e; border-radius: 8px; }
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .input-group { display: flex; flex-direction: column; }
+        .input-group label { font-size: 11px; color: #aaa; margin-bottom: 5px; text-transform: uppercase; }
+        input, textarea, select { padding: 10px; border-radius: 4px; border: 1px solid #333; background: #2b2b2b; color: #fff; font-size: 14px; }
+        
+        .controls { display: flex; justify-content: center; gap: 15px; margin-top: 30px; padding-bottom: 20px; }
+        .btn { padding: 12px 30px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.3s; }
+        .btn-jpg { background: #27ae60; color: white; }
+        .btn-pdf { background: #2980b9; color: white; }
+        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+
+        /* সার্টিফিকেট প্রিভিউ */
+        #render-area { display: flex; justify-content: center; padding: 50px 0; background: #333; }
+        .paper {
+            width: 820px; min-height: 1120px; background-color: #efd585;
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            padding: 60px 70px; position: relative; box-shadow: 0 0 50px rgba(0,0,0,1);
+            color: #1a1a1a; box-sizing: border-box; font-family: Arial, sans-serif;
+        }
+
+        .red-frame { position: absolute; top: 25px; left: 25px; right: 25px; bottom: 25px; border: 6px double var(--primary); pointer-events: none; }
+        .title-strip { background: var(--primary); color: #fff; text-align: center; font-weight: bold; padding: 6px 0; width: 60%; margin: 0 auto 15px auto; font-size: 16px; }
+        .main-title { text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 3px; margin-bottom: 30px; }
+
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table td { padding: 5px 0; font-size: 15px; font-weight: bold; vertical-align: top; }
+        .value { font-family: 'Courier Prime', monospace; text-transform: uppercase; font-size: 18px; color: #000; }
+        
+        .strike { text-decoration: line-through; text-decoration-thickness: 3px; color: #d63031; }
+
+        .block-label { width: 220px; font-weight: bold; }
+        .diag-content { font-family: 'Courier Prime', monospace; font-weight: 700; font-size: 18px; line-height: 1.5; flex: 1; padding-left: 10px; }
+
+        /* সই এবং স্ট্যাম্প */
+        .stamp-wrap { position: absolute; width: 200px; text-align: center; }
+        .blue-ink { color: rgba(20, 40, 160, 0.8); font-family: 'Courier Prime', monospace; font-style: italic; font-weight: bold; font-size: 14px; transform: rotate(-3deg); mix-blend-mode: multiply; }
+        .ballpen-sig { font-family: 'Dancing Script', cursive; color: #003399; font-size: 26px; position: absolute; top: -25px; left: 30px; opacity: 0.8; }
+
+        .footer { position: absolute; bottom: 35px; left: 60px; right: 60px; font-size: 10px; border-top: 1.5px solid var(--primary); padding-top: 10px; text-align: center; font-weight: bold; }
+        
+        @media print { .admin-header, .form-container, .controls { display: none; } #render-area { padding: 0; } }
+    </style>
+</head>
+<body>
+
+<div class="admin-header">
+    <h1>TRICK A4IF FORENSIC Certificate Generator</h1>
+    <div class="promo">Created by: <b>Arifull Islam</b> | Powered by: <b>TRICK A4IF</b></div>
+</div>
+
+<div class="form-container">
+    <div class="input-grid">
+        <div class="input-group"><label>1. UHID</label><input type="text" id="in_uhid" value="638256"></div>
+        <div class="input-group"><label>2. IP No.</label><input type="text" id="in_ip" value="16/84345"></div>
+        <div class="input-group"><label>3. Patient Name</label><input type="text" id="in_name" value="ARIFA AKTER"></div>
+        <div class="input-group"><label>4. Age Details</label><input type="text" id="in_age" value="23 Y- 05 M 06 D"></div>
+        <div class="input-group"><label>5. Father/Husband</label><input type="text" id="in_parent" value="MOHAMMAD PREM KHAN"></div>
+        <div class="input-group"><label>6. Address</label><input type="text" id="in_addr" value="H-3/3, VAGABOTI, BANARJEE ROAD, HATKHOLA"></div>
+        <div class="input-group"><label>7. City</label><input type="text" id="in_city" value="DHAKA"></div>
+        <div class="input-group"><label>8. Country</label><input type="text" id="in_country" value="BANGLADESH"></div>
+        <div class="input-group"><label>9. Telephone</label><input type="text" id="in_tel" value="+8801778567854"></div>
+        <div class="input-group"><label>10. E-mail</label><input type="text" id="in_email" value=""></div>
+        <div class="input-group"><label>11. Ward</label><input type="text" id="in_ward" value="LEVEL - 4 B"></div>
+        <div class="input-group"><label>12. Time Adm</label><input type="text" id="in_t_adm" value="5:15 AM"></div>
+        <div class="input-group"><label>13. Date Adm</label><input type="text" id="in_d_adm" value="05/05/2022"></div>
+        <div class="input-group"><label>14. Time Death</label><input type="text" id="in_t_death" value="8:30 AM"></div>
+        <div class="input-group"><label>15. Date Death</label><input type="text" id="in_d_death" value="05/05/2022"></div>
+        <div class="input-group"><label>16. Diagnosis</label><textarea id="in_diag">AMI(INFERIOR+POSTERIOR+RV INFARCT)&#10;CARDIOGENIC SHOCK</textarea></div>
+        <div class="input-group"><label>17. Cause of Death</label><textarea id="in_cause">AMI(INF+POST+RV INFARCT)&#10;VT/VF</textarea></div>
+        <div class="input-group"><label>18. Certified Text</label><input type="text" id="in_cert_text" value="08-30 PM on Tuesday (day) of 04 (date) 1 (month) 2022 (year)"></div>
+        <div class="input-group"><label>19. Consultant</label><input type="text" id="in_dr1" value="DR. A. Q. M. REZA"></div>
+        <div class="input-group"><label>20. Specialty</label><input type="text" id="in_spec" value="INTERVENTIONAL CARDIOLOGY"></div>
+        <div class="input-group"><label>21. ICU Dr.</label><input type="text" id="in_dr_icu" value="DR. SHIBAPADA CHAKRABARTY"></div>
+        <div class="input-group"><label>22. Certifying Dr.</label><input type="text" id="in_dr_cert" value="DR. HAMZA"></div>
+        <div class="input-group"><label>23. Designation</label><input type="text" id="in_desig" value="RMO-Cardiology"></div>
+        <div class="input-group"><label>24. Stamp Info</label><textarea id="in_stamp">Dr. Hamza&#10;Apollo Hospitals Dhaka&#10;18.7.16</textarea></div>
+        <div class="input-group"><label>25. Ballpen Sign 1</label><input type="text" id="in_sig1" value="A.Q.M. Reza"></div>
+        <div class="input-group"><label>26. Ballpen Sign 2</label><input type="text" id="in_sig2" value="Hamza"></div>
+        <div class="input-group"><label>27. Gender Switch</label>
+            <select id="gen_switch"><option value="f">Strike MALE (Result Female)</option><option value="m">Strike FEMALE (Result Male)</option></select>
+        </div>
+        <div class="input-group"><label>28. Export Quality</label><input type="text" value="4K UHD" disabled></div>
+    </div>
+    
+    <div class="controls">
+        <button class="btn btn-jpg" onclick="exportFile('jpg')">Download 4K JPG</button>
+        <button class="btn btn-pdf" onclick="exportFile('pdf')">Download 4K PDF</button>
+    </div>
+</div>
+
+<div id="render-area">
+    <div class="paper" id="main_cert">
+        <div class="red-frame"></div>
+        
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+            <div style="text-align:center; font-size:9px; width:130px;"><img src="https://i.ibb.co.com/KxQQDbf7/logo1.png" width="70"><br>Accredited by JCI</div>
+            <div style="text-align:right;"><img src="https://i.ibb.co.com/zW5QVvHt/logo2.png" width="60"><br><img src="https://i.ibb.co.com/W4dTjrkV/logo3.png" width="100"></div>
+        </div>
+
+        <div class="title-strip">DISCHARGE SUMMARY</div>
+        <div class="main-title">DEATH CERTIFICATE</div>
+
+        <table class="info-table">
+            <tr><td width="200">UHID</td><td width="20">:</td><td class="value" id="v_uhid"></td><td width="100" style="padding-left:20px;">IP. No.</td><td width="20">:</td><td class="value" id="v_ip"></td></tr>
+            <tr><td>Patients Name</td><td>:</td><td class="value" id="v_name" colspan="4"></td></tr>
+            <tr><td>Age/Gender</td><td>:</td><td class="value" colspan="4"><span id="v_age"></span> - <span id="m_strike">Male</span> <span id="f_strike">Female</span></td></tr>
+            <tr><td>Father's / Husband's Name</td><td>:</td><td class="value" id="v_parent" colspan="4"></td></tr>
+            <tr><td>Address</td><td>:</td><td class="value" id="v_addr" colspan="4"></td></tr>
+            <tr><td>City / Country</td><td>:</td><td class="value" id="v_location" colspan="4"></td></tr>
+            <tr><td>Time/Date Admission</td><td>:</td><td class="value" id="v_adm" colspan="4"></td></tr>
+            <tr><td>Time/Date Death</td><td>:</td><td class="value" id="v_death" colspan="4"></td></tr>
+        </table>
+
+        <div style="display:flex; margin-top:25px;"><div class="block-label">Diagnosis</div><div width="20">:</div><div class="diag-content" id="v_diag"></div></div>
+        <div style="display:flex; margin-top:35px;"><div class="block-label">Cause of Death</div><div width="20">:</div><div class="diag-content" id="v_cause"></div></div>
+
+        <div style="margin-top:50px; font-weight:bold; border-top:1.5px solid #000; padding-top:10px; font-size:15px;">
+            The above named patient is certified Dead at <span id="v_cert_text"></span>
+        </div>
+
+        <div style="position:relative; margin-top:30px;">
+            <div class="stamp-wrap" style="right:80px; top:-10px;"><div class="ballpen-sig" id="v_sig1"></div><div class="blue-ink" id="v_stamp1"></div></div>
+            <table class="info-table">
+                <tr><td width="200">Primary Consultant</td><td>:</td><td class="value" id="v_dr1"></td></tr>
+                <tr><td>Specialty</td><td>:</td><td class="value" id="v_spec"></td></tr>
+                <tr><td>Signature</td><td>:</td><td class="value">________________</td></tr>
+            </table>
+        </div>
+
+        <div style="margin-top:30px;"><table class="info-table"><tr><td width="200">ICU Consultant</td><td>:</td><td class="value" id="v_dr_icu"></td></tr></table></div>
+
+        <div style="position:relative; margin-top:30px;">
+            <div class="stamp-wrap" style="right:80px; top:10px;"><div class="ballpen-sig" id="v_sig2"></div><div class="blue-ink" id="v_stamp2"></div></div>
+            <table class="info-table">
+                <tr><td width="200">Doctor Certifying Death</td><td>:</td><td class="value" id="v_dr_cert"></td></tr>
+                <tr><td>Designation</td><td>:</td><td class="value" id="v_desig"></td></tr>
+                <tr><td>Signature</td><td>:</td><td class="value">________________</td></tr>
+            </table>
+        </div>
+
+        <div class="footer">
+            Plt # 81, Block # E, Bashundhara R/A, Dhaka-1229, Bangladesh. Phone: +880-2-8431661. Created by TRICK A4IF.
+        </div>
+    </div>
+</div>
+
+<script>
+    const inputs = document.querySelectorAll('input, textarea, select');
+    function update() {
+        document.getElementById('v_uhid').innerText = document.getElementById('in_uhid').value;
+        document.getElementById('v_ip').innerText = document.getElementById('in_ip').value;
+        document.getElementById('v_name').innerText = document.getElementById('in_name').value;
+        document.getElementById('v_age').innerText = document.getElementById('in_age').value;
+        document.getElementById('v_parent').innerText = document.getElementById('in_parent').value;
+        document.getElementById('v_addr').innerText = document.getElementById('in_addr').value;
+        document.getElementById('v_location').innerText = document.getElementById('in_city').value + " / " + document.getElementById('in_country').value;
+        document.getElementById('v_adm').innerText = document.getElementById('in_t_adm').value + " / " + document.getElementById('in_d_adm').value;
+        document.getElementById('v_death').innerText = document.getElementById('in_t_death').value + " / " + document.getElementById('in_d_death').value;
+        document.getElementById('v_diag').innerHTML = document.getElementById('in_diag').value.replace(/\n/g, '<br>');
+        document.getElementById('v_cause').innerHTML = document.getElementById('in_cause').value.replace(/\n/g, '<br>');
+        document.getElementById('v_cert_text').innerText = document.getElementById('in_cert_text').value;
+        document.getElementById('v_dr1').innerText = document.getElementById('in_dr1').value;
+        document.getElementById('v_spec').innerText = document.getElementById('in_spec').value;
+        document.getElementById('v_dr_icu').innerText = document.getElementById('in_dr_icu').value;
+        document.getElementById('v_dr_cert').innerText = document.getElementById('in_dr_cert').value;
+        document.getElementById('v_desig').innerText = document.getElementById('in_desig').value;
+        document.getElementById('v_sig1').innerText = document.getElementById('in_sig1').value;
+        document.getElementById('v_sig2').innerText = document.getElementById('in_sig2').value;
+        
+        const sTxt = document.getElementById('in_stamp').value.replace(/\n/g, '<br>');
+        document.getElementById('v_stamp1').innerHTML = sTxt;
+        document.getElementById('v_stamp2').innerHTML = sTxt;
+
+        const gen = document.getElementById('gen_switch').value;
+        document.getElementById('m_strike').className = (gen === 'f' ? 'strike' : '');
+        document.getElementById('f_strike').className = (gen === 'm' ? 'strike' : '');
+    }
+
+    inputs.forEach(input => input.addEventListener('input', update));
+    window.onload = update;
+
+    async function exportFile(type) {
+        const area = document.getElementById('main_cert');
+        const canvas = await html2canvas(area, { scale: 4, useCORS: true });
+        const img = canvas.toDataURL('image/jpeg', 1.0);
+        
+        if(type === 'jpg') {
+            const link = document.createElement('a');
+            link.download = 'TrickA4IF_Death_Cert_4K.jpg';
+            link.href = img;
+            link.click();
+        } else {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            pdf.addImage(img, 'JPEG', 0, 0, 210, 297);
+            pdf.save('TrickA4IF_Death_Cert_4K.pdf');
+        }
+    }
+</script>
+</body>
+                                                                                               </html>
